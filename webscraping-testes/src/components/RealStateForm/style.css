@@ -4,70 +4,69 @@ form {
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color: #ffffff; /* Updated to a cleaner background */
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     display: flex;
-    flex-wrap: wrap; /* Permite que os elementos quebrem a linha quando necessário */
+    flex-direction: column; /* Changed to column for better stacking */
     gap: 15px; /* Espaçamento entre os itens */
-  }
-  
-  /* Estilo das divs que contêm o label e o input */
-  div {
+}
+
+/* Estilo das divs que contêm o label e o input */
+div {
     display: flex; /* Alinha o label e o input na mesma linha */
     align-items: center; /* Alinha os itens verticalmente ao centro */
     width: 100%;
     margin-bottom: 15px; /* Ajusta o espaçamento entre os campos */
-  }
-  
-  /* Estilo dos rótulos (labels) */
-  label {
+}
+
+/* Estilo dos rótulos (labels) */
+label {
     font-size: 16px;
     color: #333;
     margin-right: 10px; /* Espaçamento entre o label e o input */
     flex: 0 0 150px; /* Largura fixa para os labels */
     text-align: right; /* Alinha o texto do label à direita */
-  }
-  
-  /* Estilo dos campos de entrada (inputs) */
-  input[type="number"],
-  input[type="text"] {
-    padding: 8px;
+}
+
+/* Estilo dos campos de entrada (inputs) */
+input[type="number"],
+input[type="text"] {
+    padding: 10px; /* Increased padding for better touch targets */
     font-size: 16px;
     border: 1px solid #ddd;
     border-radius: 4px;
     box-sizing: border-box;
     flex: 1; /* Faz o input ocupar o restante do espaço disponível */
-    width: auto; /* Para que o tamanho seja definido automaticamente */
-  }
-  
-  /* Estilo dos inputs numéricos menores */
-  input[type="number"] {
-    width: 80px; /* Inputs numéricos menores */
+}
+
+/* Estilo dos inputs numéricos menores */
+input[type="number"] {
+    width: 60px; /* Inputs numéricos menores */
     font-size: 14px;
-  }
-  
-  /* Estilo dos inputs de texto maiores */
-  input[type="text"] {
+}
+
+/* Estilo dos inputs de texto maiores */
+input[type="text"] {
     width: 100%; /* Inputs de texto maiores */
-  }
-  
-  /* Estilo para o layout de dois inputs numéricos por linha */
-  .form-row {
+}
+
+/* Estilo para o layout de dois inputs numéricos por linha */
+.form-row {
     display: flex;
     flex-wrap: wrap; /* Permite que os inputs numéricos quebrem linha */
     gap: 15px; /* Espaço entre os inputs numéricos */
     width: 100%; /* Garante que ocupe toda a largura disponível */
-  }
-  
-  /* Estilo para os inputs numéricos dentro do .form-row */
-  .form-row div {
+}
+
+/* Estilo para os inputs numéricos dentro do .form-row */
+.form-row div {
     flex: 1;
-    min-width: 140px; /* Tamanho mínimo para os inputs numéricos */
-  }
-  
-  /* Estilo do botão de envio */
-  button {
+    min-width: 100px; /* Tamanho mínimo para os inputs numéricos */
+}
+
+/* Estilo do botão de envio */
+button {
     width: 100%;
     padding: 12px;
     font-size: 18px;
@@ -76,25 +75,40 @@ form {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  /* Mudança de cor ao passar o mouse sobre o botão */
-  button:hover {
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Added transform transition */
+}
+
+/* Mudança de cor ao passar o mouse sobre o botão */
+button:hover {
     background-color: #45a049;
-  }
-  
-  /* Estilo para o erro de validação ou campo obrigatório */
-  input:invalid {
+    transform: scale(1.02); /* Slightly enlarge button on hover */
+}
+
+/* Estilo para o erro de validação ou campo obrigatório */
+input:invalid {
     border-color: #ff4d4d;
-  }
-  
-  input:required:valid {
+}
+
+input:required:valid {
     border-color: #4CAF50;
-  }
-  
-  /* Estilo do alerta de sucesso após envio */
-  form button:active {
+}
+
+/* Estilo do alerta de sucesso após envio */
+form button:active {
     transform: scale(0.98);
-  }
-  
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    form {
+        padding: 15px; /* Reduced padding on smaller screens */
+    }
+
+    label {
+        flex: 0 0 120px; /* Adjust label width for smaller screens */
+    }
+
+    input[type="number"] {
+        width: 50px; /* Smaller width for number inputs on mobile */
+    }
+}
