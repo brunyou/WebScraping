@@ -16,27 +16,45 @@ app.get('/scrape', async (req, res) => {
 
   try {
     // Inicializa o Puppeteer
-    const browser = await puppeteer.launch({ headless: true }); // Define headless para 'true' para evitar abrir a interface gráfica do navegador
+    const browser = await puppeteer.launch({ headless: false,
+      //slowMo: 50,  
+      defaultViewport: null 
+     }); 
     const page = await browser.newPage();
 
+    await page.goto('https://www.google.com.br/');
+    await page.waitForSelector('textarea');
+    await page.click('textarea');
+    await page.type('textarea',`${bairro}, ${cidade} 2 quartos, 1 garagem, aluguel`);
+    await page.keyboard.press('Enter');
+    await page.waitForSelector('.hlcw0c')
+    await page.click('.hlcw0c')
     // Acessa o site e realiza ações
-    await page.goto('https://www.zapimoveis.com.br/');
-    await page.waitForSelector('.l-input__input'); // Aguarda o seletor estar disponível
-    await page.type('.l-input__input', `${bairro}, ${cidade}`); // Preenche o campo com o bairro e a cidade
-    await page.keyboard.press('Enter'); // Simula o pressionar da tecla "Enter"
+    // await page.goto('https://www.zapimoveis.com.br/');
+    // await page.waitForSelector('.l-input__input'); // Aguarda o seletor estar disponível
+    // await page.click('.l-input__input');
+    // await page.type('.l-input__input', `${bairro}, ${cidade}`); // Preenche o campo com o bairro e a cidade
+    // await page.waitForSelector('.olx-core-checkbox-radio__root.olx-core-checkbox-radio__root--card.olx-core-checkbox__root.w-full'); // Wait for the selector to appear
+    // const firstCheckbox = await page.$('.olx-core-checkbox-radio__root.olx-core-checkbox-radio__root--card.olx-core-checkbox__root.w-full');
+    // if (firstCheckbox) {
+    //   await firstCheckbox.click();
+    // } else {
+    //   console.error('No checkbox found with the specified class.');
+    // }
+    // await page.keyboard.press('Enter'); // Simula o pressionar da tecla "Enter"
     
-    await page.waitForSelector('.card-listing'); // Aguarda o carregamento dos resultados
-    const results = await page.evaluate(() => {
-      const listings = document.querySelectorAll('.card-listing');
-      return Array.from(listings).map(listing => {
-        const title = listing.querySelector('.simple-card__title')?.innerText || 'Título indisponível';
-        const price = listing.querySelector('.simple-card__price')?.innerText || 'Preço indisponível';
-        const address = listing.querySelector('.simple-card__address')?.innerText || 'Endereço indisponível';
-        return { title, price, address };
-      });
-    });
+    // await page.waitForSelector('.card-listing'); // Aguarda o carregamento dos resultados
+    // const results = await page.evaluate(() => {
+    //   const listings = document.querySelectorAll('.card-listing');
+    //   return Array.from(listings).map(listing => {
+    //     const title = listing.querySelector('.simple-card__title')?.innerText || 'Título indisponível';
+    //     const price = listing.querySelector('.simple-card__price')?.innerText || 'Preço indisponível';
+    //     const address = listing.querySelector('.simple-card__address')?.innerText || 'Endereço indisponível';
+    //     return { title, price, address };
+    //   });
+    // });
 
-    await browser.close(); // Fecha o navegador
+    //await browser.close(); // Fecha o navegador
 
     res.json({ results }); // Retorna os resultados
   } catch (error) {
