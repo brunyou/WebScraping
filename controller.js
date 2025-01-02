@@ -29,6 +29,92 @@ app.get('/scrape', async (req, res) => {
     await page.keyboard.press('Enter');
     await page.waitForSelector('.hlcw0c')
     await page.click('.hlcw0c')
+
+    const currentUrl = page.url();
+
+    if (currentUrl.includes('www.zapimoveis.com.br')) {
+      // Aguarde a presença do seletor necessário na página
+      await page.waitForSelector('[data-cy="rp-cardProperty-price-txt"]');
+    
+      // Extração de dados e construção da lista de objetos contendo todos os detalhes da propriedade
+      const imovelList = await page.evaluate(() => {
+        const listings = document.querySelectorAll('.ListingCard_result-card__Pumtx');
+        const result = [];
+      
+        listings.forEach(listing => {
+          const getQuantity = (ariaLabel) => {
+            const spanElement = listing.querySelector(`span[aria-label="${ariaLabel}"]`);
+            if (!spanElement) return null;
+      
+            const parentElement = spanElement.closest('p');
+            if (parentElement) {
+              const textContent = parentElement.textContent.trim();
+              const number = parseInt(textContent.replace(/\D/g, ''), 10);
+              return isNaN(number) || number < 0 ? null : number;
+            }
+            return null;
+          };
+      
+          // Função para extrair preços
+          const extractPrices = (priceText) => {
+            if (!priceText) return { aluguel: null, condominio: null, iptu: null };
+      
+            const priceDetails = { aluguel: null, condominio: null, iptu: null };
+      
+            // Expressão regular para identificar os valores de preço
+            const priceRegex = /R\$\s([\d\.]+)(?:\/mês)?/g;
+            const condoRegex = /Cond\.\sR\$\s([\d\.]+)/;
+            const iptuRegex = /IPTU\sR\$\s([\d\.]+)/;
+      
+            const aluguelMatch = priceRegex.exec(priceText);
+            if (aluguelMatch) {
+              priceDetails.aluguel = parseFloat(aluguelMatch[1].replace('.', '').replace(',', '.'));
+            }
+      
+            const condominioMatch = condoRegex.exec(priceText);
+            if (condominioMatch) {
+              priceDetails.condominio = parseFloat(condominioMatch[1].replace('.', '').replace(',', '.'));
+            }
+      
+            const iptuMatch = iptuRegex.exec(priceText);
+            if (iptuMatch) {
+              priceDetails.iptu = parseFloat(iptuMatch[1].replace('.', '').replace(',', '.'));
+            }
+      
+            return priceDetails;
+          };
+      
+          // Extração de preços do texto
+          const priceText = listing.querySelector('[data-cy="rp-cardProperty-price-txt"]') ? 
+                            listing.querySelector('[data-cy="rp-cardProperty-price-txt"]').textContent.trim() : null;
+      
+          const prices = extractPrices(priceText);
+      
+          // Construção do objeto contendo tanto os detalhes da propriedade quanto as informações de preço
+          result.push({
+            squared_meters: getQuantity('Tamanho do imóvel'),
+            bathrooms: getQuantity('Quantidade de banheiros'),
+            bedrooms: getQuantity('Quantidade de quartos'),
+            garages: getQuantity('Quantidade de vagas de garagem'),
+            price_details: prices
+          });
+        });
+      
+        return result; // Retorna a lista de detalhes da propriedade com preços
+      });
+      
+      
+    
+      console.log(imovelList); // Exibe a lista extraída de detalhes da propriedade com preços
+    } else {
+      console.log('Site acessado não é o Zap Imóveis');
+    }
+    
+    
+    
+    
+ 
+
     // Acessa o site e realiza ações
     // await page.goto('https://www.zapimoveis.com.br/');
     // await page.waitForSelector('.l-input__input'); // Aguarda o seletor estar disponível
